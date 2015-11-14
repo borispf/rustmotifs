@@ -2,6 +2,7 @@
 name = "bruteforce"
 version = "0.1.0"
 authors = ["Boris Pfahringer <bpnzltd@gmail.com>"]
+build = "build.rs"
 
 [dependencies]
 libc = "0.2"
