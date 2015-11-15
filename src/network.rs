@@ -1,7 +1,7 @@
 use petgraph;
-use std::collections::HashSet;
-use std::iter::FromIterator;
+use std::collections::HashMap;
 
+#[derive(Copy, Clone)]
 pub enum EdgeType {
     Pos,
     Neg,
@@ -19,10 +19,18 @@ pub trait SubNetwork {
 impl SubNetwork for Network {
     fn subnet<N: AsRef<[NodeIndex]>>(&self, ns: N) -> Network {
         let ns = ns.as_ref();
-        let n_set: HashSet<NodeIndex> = HashSet::from_iter(ns.iter().cloned());
-        let subnet = Network::with_capacity(ns.len(), ns.len() * 2);
-        // IMPLEMENTATION
-
+        let mut subnet = Network::with_capacity(ns.len(), ns.len() * 2);
+        let old_to_new: HashMap<NodeIndex, NodeIndex> =
+            ns.iter().map(|n| (*n, subnet.add_node(self[*n].clone()))).collect();
+        for u in ns {
+            for (v, e) in self.edges(*u) {
+                match (old_to_new.get(u), old_to_new.get(&v)) {
+                    (Some(u), Some(v)) => {subnet.add_edge(*u, *v, *e);},
+                    (Some(_), None) => {},
+                    _ => {panic!("Huh!??!??!");},
+                }
+            }
+        }
         subnet
     }
 }
