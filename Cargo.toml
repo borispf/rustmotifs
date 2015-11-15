@@ -5,6 +5,8 @@ authors = ["Boris Pfahringer <bpnzltd@gmail.com>"]
 build = "build.rs"
 
 [dependencies]
+arrayvec = "*"
+fixedbitset = "*"
 libc = "0.2"
 petgraph = "*"
 

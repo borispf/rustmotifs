@@ -72,6 +72,11 @@ pub fn canonical_labelling(net: &Network) -> Vec<NodeIndex> {
     Vec::from_iter(lab[..n].iter().map(|idx| NodeIndex::new(*idx as usize)))
 }
 
+pub fn canonicalize(net: Network) -> Network {
+    let lab = canonical_labelling(&net);
+    net.subnet(&lab)
+}
+
 #[test]
 fn test_canon() {
     use network::EdgeType::*;
