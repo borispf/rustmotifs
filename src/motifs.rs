@@ -62,7 +62,7 @@ fn test_motifs_3() {
     let twofan = canonical_subnet(&net, &[5, 10, 13]).adjacency_matrix();
     assert_eq!(Some(&3), motifs.get(&twofan));
 
-    let vee = canonical_subnet(&net, &[6, 9, 10]).adjacency_matrix();
+    let vee = canonical_subnet(&net, &[3, 5, 13]).adjacency_matrix();
     assert_eq!(Some(&3), motifs.get(&vee));
 
     assert_eq!(4, motifs.len());
