@@ -51,10 +51,14 @@ pub fn canonical_labelling(net: &Network) -> Vec<NodeIndex> {
     options.getcanon = 1;
 
     let n = net.node_count();
-    assert!(n <= MAXN, "number of nodes greater than MAXN ({}): {}", MAXN, n);
+    assert!(n * 2 <= MAXN, "number of nodes greater than MAXN ({}): {}", MAXN, n);
 
     for e in net.raw_edges() {
-        add_one_arc(&mut g, e.source().index(), e.target().index());
+        let level = match e.weight {
+            EdgeType::Pos => 0,
+            EdgeType::Neg => n,
+        };
+        add_one_arc(&mut g, e.source().index() + level, e.target().index() + level);
     }
 
     unsafe {
