@@ -3,8 +3,8 @@ use std::collections::HashMap;
 
 #[derive(Copy, Clone, Debug)]
 pub enum EdgeType {
-    Pos,
-    Neg,
+    Pos = 1,
+    Neg = 2,
 }
 
 pub type EdgeIndex = petgraph::graph::EdgeIndex;
