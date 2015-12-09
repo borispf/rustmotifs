@@ -61,8 +61,8 @@ pub fn enumerate_subgraphs(k: usize, net: &Network) -> BTreeMap<MotifId, usize> 
     let n = net.node_count();
     for v in (0..n).map(NodeIndex::new) {
         let v_subgraph = vec![v].into_iter().collect();
-        let v_subgraph_neighbours = net.neighbors(v).collect();
-        let v_extension = net.neighbors(v).filter(|u| *u > v).collect();
+        let v_subgraph_neighbours = net.neighbors_undirected(v).collect();
+        let v_extension = net.neighbors_undirected(v).filter(|u| *u > v).collect();
         extend_subgraph(k, net, v, v_subgraph, v_subgraph_neighbours, v_extension, &mut out);
     }
     out
@@ -169,6 +169,7 @@ fn test_motifs_4() {
     assert_eq!(Some(&1), motifs.get(&branch_feedforward));
 
     assert_eq!(9, motifs.len());
+    assert_eq!(enumerate_subgraphs(4, &net), motifs);
 }
 
 #[test]
