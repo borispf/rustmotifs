@@ -120,8 +120,6 @@ fn test_motifs_3() {
     let motifs = all_motifs(3, &net);
 
     let feedforward = motif_id(&canonical_subnet(&net, &[3, 12, 13]));
-    println!("{:?}", feedforward);
-    panic!();
     assert_eq!(Some(&5), motifs.get(&feedforward));
 
     let line = motif_id(&canonical_subnet(&net, &[1, 2, 16]));

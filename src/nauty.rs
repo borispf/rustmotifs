@@ -3,9 +3,12 @@ use nauty_bindings::{graph, optionblk};
 
 use network::*;
 use std::iter::FromIterator;
+use std::sync::{StaticMutex, MUTEX_INIT};
 
 pub const MAXN: usize = 64;
 pub const WORDSIZE: usize = 64;
+
+static NAUTY_LOCK: StaticMutex = MUTEX_INIT;
 
 fn default_options_graph() -> optionblk {
     optionblk {
@@ -62,6 +65,7 @@ pub fn canonical_labelling(net: &Network) -> Vec<NodeIndex> {
     }
 
     unsafe {
+        let _g = NAUTY_LOCK.lock().unwrap();
         nauty_bindings::densenauty(
             g.as_mut_ptr(),
             lab.as_mut_ptr(),

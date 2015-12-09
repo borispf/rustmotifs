@@ -1,3 +1,5 @@
+#![feature(static_mutex)]
+
 extern crate arrayvec;
 extern crate fixedbitset;
 extern crate libc;
