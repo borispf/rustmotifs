@@ -57,11 +57,15 @@ pub fn canonical_labelling(net: &Network) -> Vec<NodeIndex> {
     assert!(n * 2 <= MAXN, "number of nodes greater than MAXN ({}): {}", MAXN, n);
 
     for e in net.raw_edges() {
-        let level = match e.weight {
-            EdgeType::Pos => 0,
-            EdgeType::Neg => n,
-        };
-        add_one_arc(&mut g, e.source().index() + level, e.target().index() + level);
+        let mut level = 0;
+        let mut weight = e.weight;
+        while weight != 0 {
+            if weight & 1 == 1 {
+                add_one_arc(&mut g, e.source().index() + level, e.target().index() + level);
+            }
+            level += n;
+            weight >>= 1;
+        }
     }
 
     unsafe {
@@ -87,7 +91,6 @@ pub fn canonicalize(net: Network) -> Network {
 
 #[test]
 fn test_canon() {
-    use network::EdgeType::*;
     let mut net1 = Network::new();
     let a1 = net1.add_node("1".to_string());
     let b1 = net1.add_node("2".to_string());
@@ -103,22 +106,22 @@ fn test_canon() {
     let b2 = net2.add_node("2".to_string());
     let e2 = net2.add_node("5".to_string());
     // We test using a feedforward involving a, b, c; and one with c, d, e. And e inhibiting a.
-    net1.add_edge(a1, b1, Pos);
-    net2.add_edge(a2, b2, Pos);
-    net1.add_edge(b1, c1, Pos);
-    net2.add_edge(b2, c2, Pos);
-    net1.add_edge(a1, c1, Pos);
-    net2.add_edge(a2, c2, Pos);
+    net1.add_edge(a1, b1, 1);
+    net2.add_edge(a2, b2, 1);
+    net1.add_edge(b1, c1, 1);
+    net2.add_edge(b2, c2, 1);
+    net1.add_edge(a1, c1, 1);
+    net2.add_edge(a2, c2, 1);
 
-    net1.add_edge(c1, d1, Pos);
-    net2.add_edge(c2, d2, Pos);
-    net1.add_edge(d1, e1, Pos);
-    net2.add_edge(d2, e2, Pos);
-    net1.add_edge(c1, e1, Neg);
-    net2.add_edge(c2, e2, Neg);
+    net1.add_edge(c1, d1, 1);
+    net2.add_edge(c2, d2, 1);
+    net1.add_edge(d1, e1, 1);
+    net2.add_edge(d2, e2, 1);
+    net1.add_edge(c1, e1, 2);
+    net2.add_edge(c2, e2, 2);
 
-    net1.add_edge(e1, a1, Neg);
-    net2.add_edge(e2, a2, Neg);
+    net1.add_edge(e1, a1, 2);
+    net2.add_edge(e2, a2, 2);
 
     let lab1 = canonical_labelling(&net1);
     let lab2 = canonical_labelling(&net2);

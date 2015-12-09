@@ -14,8 +14,8 @@ fn main() {
     file.read_to_string(&mut s).unwrap();
     let adj_mat = Vec::from_iter(s.split_whitespace().map(|f| match f {
         "1" => 1,
-        "2" => 1,
-        "-1" => -1,
+        "2" => 2,
+        "-1" => 3,
         "0" => 0,
         s => panic!("{:?}", s),
     }));
@@ -26,8 +26,9 @@ fn main() {
     }
     for i in (0..n).map(NodeIndex::new) {
         for j in (0..n).map(NodeIndex::new) {
-            if let Some(e) = EdgeType::from_int(adj_mat[n * i.index() + j.index()]) {
-                if i != j {net.add_edge(i, j, e);}
+            let w = adj_mat[n * i.index() + j.index()];
+            if i != j && w != 0 {
+                net.add_edge(i, j, w);
             }
         }
     }

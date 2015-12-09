@@ -104,12 +104,12 @@ fn test_shared_ff() {
     let mut net = Network::new();
     let source = net.add_node("source".to_string());
     let sink = net.add_node("sink".to_string());
-    net.add_edge(source, sink, EdgeType::Pos);
+    net.add_edge(source, sink, 1);
     let n = 10;
     for i in 0..n {
         let node = net.add_node(format!("{}", i));
-        net.add_edge(source, node, EdgeType::Pos);
-        net.add_edge(node, sink, EdgeType::Pos);
+        net.add_edge(source, node, 1);
+        net.add_edge(node, sink, 1);
     }
     assert_eq!(Some(&n), all_motifs(3, &net).get(&2943));
 }

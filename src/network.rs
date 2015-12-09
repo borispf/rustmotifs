@@ -1,22 +1,7 @@
 use petgraph;
 use std::collections::HashMap;
 
-#[derive(Copy, Clone, Debug)]
-pub enum EdgeType {
-    Pos = 1,
-    Neg = 2,
-}
-
-impl EdgeType {
-    pub fn from_int(i: i32) -> Option<EdgeType> {
-        match i {
-            -1 => Some(EdgeType::Neg),
-            1 => Some(EdgeType::Pos),
-            _ => None,
-        }
-    }
-}
-
+pub type EdgeType = u8;
 pub type EdgeIndex = petgraph::graph::EdgeIndex;
 pub type NodeIndex = petgraph::graph::NodeIndex;
 
@@ -47,7 +32,6 @@ impl SubNetwork for Network {
 
 #[test]
 fn test_network() {
-    use self::EdgeType::*;
     let mut net = Network::new();
     let a = net.add_node("a".to_string());
     let b = net.add_node("b".to_string());
@@ -56,11 +40,11 @@ fn test_network() {
     let e = net.add_node("e".to_string());
 
     for u in &[a, b, c, d, e] {
-        net.add_edge(*u, *u, Pos);
+        net.add_edge(*u, *u, 1);
         for v in &[a, b, c, d, e] {
             if u.index() < v.index() {
-                net.add_edge(*u, *v, Pos);
-                net.add_edge(*v, *u, Neg);
+                net.add_edge(*u, *v, 1);
+                net.add_edge(*v, *u, 2);
             }
         }
     }
@@ -89,7 +73,6 @@ fn test_network() {
 // Blocks of Complex Networks. Has many feedforwards.
 #[cfg(test)]
 pub fn network_from_paper() -> Network {
-    use self::EdgeType::*;
     let mut net = Network::new();
     let a = net.add_node("1".to_string());
     let b = net.add_node("2".to_string());
@@ -109,51 +92,51 @@ pub fn network_from_paper() -> Network {
     let p = net.add_node("16".to_string());
 
     // 1
-    net.add_edge(a, p, Pos);
+    net.add_edge(a, p, 1);
 
     // 2
-    net.add_edge(b, a, Pos);
+    net.add_edge(b, a, 1);
 
     // 3
-    net.add_edge(c, l, Pos);
-    net.add_edge(c, m, Pos);
+    net.add_edge(c, l, 1);
+    net.add_edge(c, m, 1);
 
     // 4
-    net.add_edge(d, j, Pos);
-    net.add_edge(d, k, Pos);
+    net.add_edge(d, j, 1);
+    net.add_edge(d, k, 1);
 
     // 5
-    net.add_edge(e, f, Pos);
-    net.add_edge(e, j, Pos);
-    net.add_edge(e, m, Pos);
+    net.add_edge(e, f, 1);
+    net.add_edge(e, j, 1);
+    net.add_edge(e, m, 1);
 
     // 6
-    net.add_edge(f, i, Pos);
-    net.add_edge(f, j, Pos);
+    net.add_edge(f, i, 1);
+    net.add_edge(f, j, 1);
 
     // 7
-    net.add_edge(g, h, Pos);
+    net.add_edge(g, h, 1);
 
     // 8
-    net.add_edge(h, a, Pos);
-    net.add_edge(h, b, Pos);
+    net.add_edge(h, a, 1);
+    net.add_edge(h, b, 1);
 
     // 9 (none outgoing)
     // 10
-    net.add_edge(j, k, Pos);
+    net.add_edge(j, k, 1);
 
     // 11 (none outgoing)
     // 12 (none outgoing)
     // 13
-    net.add_edge(m, l, Pos);
+    net.add_edge(m, l, 1);
 
     // 14 (none outgoing)
     // 15
-    net.add_edge(o, n, Pos);
+    net.add_edge(o, n, 1);
 
     // 16
-    net.add_edge(p, n, Pos);
-    net.add_edge(p, o, Pos);
+    net.add_edge(p, n, 1);
+    net.add_edge(p, o, 1);
 
     net
 }
