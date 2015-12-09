@@ -5,6 +5,7 @@ use bruteforce::motifs::*;
 
 use std::io::prelude::*;
 use std::iter::FromIterator;
+use std::str::FromStr;
 
 fn main() {
     let args = Vec::from_iter(std::env::args());
@@ -31,5 +32,6 @@ fn main() {
         }
     }
     println!("{}", n);
-    println!("{:?}", all_motifs(3, &net));
+    let k = args.get(2).and_then(|k| usize::from_str(k).ok()).unwrap_or(3);
+    println!("{:?}", all_motifs(k, &net));
 }

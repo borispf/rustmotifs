@@ -40,7 +40,7 @@ fn search_subset(k: usize,
         let motif = canonicalize(net.subnet(&Vec::from_iter(s.iter().cloned())));
         let motif_id = motif_id(&motif);
         *out.entry(motif_id).or_insert(0) += 1;
-    } else {
+    } else if s.len() < k {
         hash.insert(s.clone());
         for u in s.clone() {
             for v in net.neighbors_undirected(u) {
