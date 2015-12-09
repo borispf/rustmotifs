@@ -23,7 +23,7 @@ pub fn motif_id(motif: &Network) -> MotifId {
     let mut id = 0;
     let n = motif.node_count() as u32;
     for e in motif.raw_edges() {
-        let edge_id = 3u64.pow(n * e.source().index() as u32 + e.target().index() as u32) *
+        let edge_id = 4u64.pow(n * e.source().index() as u32 + e.target().index() as u32) *
                       e.weight as u64;
         id += edge_id;
     }
@@ -111,7 +111,7 @@ fn test_shared_ff() {
         net.add_edge(source, node, 1);
         net.add_edge(node, sink, 1);
     }
-    assert_eq!(Some(&n), all_motifs(3, &net).get(&2943));
+    assert_eq!(Some(&n), all_motifs(3, &net).get(&motif_str("011001000")));
 }
 
 #[test]
@@ -204,5 +204,5 @@ fn canonical_subnet(net: &Network, ns: &[usize]) -> Network {
 
 #[cfg(test)]
 fn motif_str(s: &str) -> MotifId {
-    MotifId::from_str_radix(s, 3).unwrap()
+    MotifId::from_str_radix(s, 4).unwrap()
 }
