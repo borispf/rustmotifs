@@ -23,7 +23,8 @@ pub fn motif_id(motif: &Network) -> MotifId {
     let mut id = 0;
     let n = motif.node_count() as u32;
     for e in motif.raw_edges() {
-        let edge_id = 3u64.pow(n * e.source().index() as u32 + e.target().index() as u32) + e.weight as u64;
+        let edge_id = 3u64.pow(n * e.source().index() as u32 + e.target().index() as u32) *
+                      e.weight as u64;
         id += edge_id;
     }
     id
@@ -55,12 +56,72 @@ fn search_subset(k: usize,
     }
 }
 
+pub fn enumerate_subgraphs(k: usize, net: &Network) -> BTreeMap<MotifId, usize> {
+    let mut out = BTreeMap::new();
+    let n = net.node_count();
+    for v in (0..n).map(NodeIndex::new) {
+        let v_subgraph = vec![v].into_iter().collect();
+        let v_subgraph_neighbours = net.neighbors(v).collect();
+        let v_extension = net.neighbors(v).filter(|u| *u > v).collect();
+        extend_subgraph(k, net, v, v_subgraph, v_subgraph_neighbours, v_extension, &mut out);
+    }
+    out
+}
+
+pub fn extend_subgraph(k: usize,
+                       net: &Network,
+                       v: NodeIndex,
+                       v_subgraph: BTreeSet<NodeIndex>,
+                       v_subgraph_neighbours: BTreeSet<NodeIndex>,
+                       mut v_extension: BTreeSet<NodeIndex>,
+                       out: &mut BTreeMap<MotifId, usize>) {
+    if v_subgraph.len() == k {
+        let motif = canonicalize(net.subnet(Vec::from_iter(v_subgraph)));
+        *out.entry(motif_id(&motif)).or_insert(0) += 1;
+    } else {
+        while let Some(w) = {
+            let maybe_w = v_extension.iter().cloned().next();
+            maybe_w.map(|w| v_extension.remove(&w));
+            maybe_w
+        } {
+            let w_neighbours: BTreeSet<_> = net.neighbors_undirected(w).filter(|u| u > &v).collect();
+            let v_extension_prime = &v_extension | &(&w_neighbours - &v_subgraph_neighbours);
+            extend_subgraph(
+                k,
+                net,
+                v,
+                &v_subgraph | &BTreeSet::from_iter(vec![w]),
+                &v_subgraph_neighbours | &BTreeSet::from_iter(net.neighbors_undirected(w)),
+                v_extension_prime,
+                out
+            )
+        }
+    }
+}
+
+#[test]
+fn test_shared_ff() {
+    let mut net = Network::new();
+    let source = net.add_node("source".to_string());
+    let sink = net.add_node("sink".to_string());
+    net.add_edge(source, sink, EdgeType::Pos);
+    let n = 10;
+    for i in 0..n {
+        let node = net.add_node(format!("{}", i));
+        net.add_edge(source, node, EdgeType::Pos);
+        net.add_edge(node, sink, EdgeType::Pos);
+    }
+    assert_eq!(Some(&n), all_motifs(3, &net).get(&2943));
+}
+
 #[test]
 fn test_motifs_3() {
     let net = network_from_paper();
     let motifs = all_motifs(3, &net);
 
     let feedforward = motif_id(&canonical_subnet(&net, &[3, 12, 13]));
+    println!("{:?}", feedforward);
+    panic!();
     assert_eq!(Some(&5), motifs.get(&feedforward));
 
     let line = motif_id(&canonical_subnet(&net, &[1, 2, 16]));
@@ -73,6 +134,8 @@ fn test_motifs_3() {
     assert_eq!(Some(&3), motifs.get(&vee));
 
     assert_eq!(4, motifs.len());
+
+    assert_eq!(enumerate_subgraphs(3, &net), motifs);
 }
 
 #[test]
@@ -124,15 +187,23 @@ fn test_motif_id() {
     }
 
     let net = network_from_paper();
+    println!("{:?}", canonical_subnet(&net, &[1, 2, 3, 4, 5, 6]));
     assert_eq!(0, motif_id(&canonical_subnet(&net, &[1])));
-    assert_eq!(10, motif_id(&canonical_subnet(&net, &[1, 2])));
-    assert_eq!(730, motif_id(&canonical_subnet(&net, &[1, 2, 3])));
-    assert_eq!(531442, motif_id(&canonical_subnet(&net, &[1, 2, 3, 4])));
-    assert_eq!(3486784402, motif_id(&canonical_subnet(&net, &[1, 2, 3, 4, 5])));
-    assert_eq!(617955825820430, motif_id(&canonical_subnet(&net, &[1, 2, 3, 4, 5, 6])));
+    assert_eq!(motif_str("0100"), motif_id(&canonical_subnet(&net, &[1, 2])));
+    assert_eq!(motif_str("001000000"), motif_id(&canonical_subnet(&net, &[1, 2, 3])));
+    assert_eq!(motif_str("0001000000000000"), motif_id(&canonical_subnet(&net, &[1, 2, 3, 4])));
+    assert_eq!(motif_str("0000100000000000000000000"),
+               motif_id(&canonical_subnet(&net, &[1, 2, 3, 4, 5])));
+    assert_eq!(motif_str("000010000001000000000000000000000000"),
+               motif_id(&canonical_subnet(&net, &[1, 2, 3, 4, 5, 6])));
 }
 
 #[cfg(test)]
 fn canonical_subnet(net: &Network, ns: &[usize]) -> Network {
     canonicalize(net.subnet(&Vec::from_iter(ns.iter().map(|n| NodeIndex::new(*n - 1)))))
+}
+
+#[cfg(test)]
+fn motif_str(s: &str) -> MotifId {
+    MotifId::from_str_radix(s, 3).unwrap()
 }

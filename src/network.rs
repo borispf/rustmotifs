@@ -7,6 +7,16 @@ pub enum EdgeType {
     Neg = 2,
 }
 
+impl EdgeType {
+    pub fn from_int(i: i32) -> Option<EdgeType> {
+        match i {
+            -1 => Some(EdgeType::Neg),
+            1 => Some(EdgeType::Pos),
+            _ => None,
+        }
+    }
+}
+
 pub type EdgeIndex = petgraph::graph::EdgeIndex;
 pub type NodeIndex = petgraph::graph::NodeIndex;
 

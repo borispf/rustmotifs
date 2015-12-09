@@ -4,7 +4,7 @@ use nauty_bindings::{graph, optionblk};
 use network::*;
 use std::iter::FromIterator;
 
-pub const MAXN: usize = 32;
+pub const MAXN: usize = 64;
 pub const WORDSIZE: usize = 64;
 
 fn default_options_graph() -> optionblk {
