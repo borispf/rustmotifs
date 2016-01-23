@@ -10,6 +10,9 @@ fixedbitset = "*"
 libc = "0.2"
 petgraph = "*"
 
+[profile.release]
+debug = true
+
 [dependencies.bindgen]
 git = "https://github.com/crabtw/rust-bindgen.git"
 

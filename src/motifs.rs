@@ -6,6 +6,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::iter::FromIterator;
 
 pub type MotifId = u64;
+pub const MOTIF_BASE: u64 = 4;
+pub type MotifFreq = BTreeMap<MotifId, usize>;
 
 pub fn all_motifs(k: usize, net: &Network) -> BTreeMap<MotifId, usize> {
     let mut hash = BTreeSet::new();
@@ -23,11 +25,28 @@ pub fn motif_id(motif: &Network) -> MotifId {
     let mut id = 0;
     let n = motif.node_count() as u32;
     for e in motif.raw_edges() {
-        let edge_id = 4u64.pow(n * e.source().index() as u32 + e.target().index() as u32) *
+        let edge_id = MOTIF_BASE.pow(n * e.source().index() as u32 + e.target().index() as u32) *
                       e.weight as u64;
         id += edge_id;
     }
     id
+}
+
+pub fn id_to_network(n: usize, mut id: MotifId) -> Network {
+    let mut net = Network::with_capacity(n, 0);
+    for _ in 0..n {
+        net.add_node(String::new());
+    }
+    for i in (0..n).map(NodeIndex::new) {
+        for j in (0..n).map(NodeIndex::new) {
+            let e = id % MOTIF_BASE;
+            id /= MOTIF_BASE;
+            if e != 0 {
+                net.add_edge(i, j, e as EdgeType);
+            }
+        }
+    }
+    net
 }
 
 fn search_subset(k: usize,
@@ -197,6 +216,13 @@ fn test_motif_id() {
                motif_id(&canonical_subnet(&net, &[1, 2, 3, 4, 5, 6])));
 }
 
+#[test]
+fn test_motif_id_roundtrip() {
+    for id in 0..128 {
+        assert_eq!(motif_id(&id_to_network(5, id)), id);
+    }
+}
+
 #[cfg(test)]
 fn canonical_subnet(net: &Network, ns: &[usize]) -> Network {
     canonicalize(net.subnet(&Vec::from_iter(ns.iter().map(|n| NodeIndex::new(*n - 1)))))
@@ -204,5 +230,5 @@ fn canonical_subnet(net: &Network, ns: &[usize]) -> Network {
 
 #[cfg(test)]
 fn motif_str(s: &str) -> MotifId {
-    MotifId::from_str_radix(s, 4).unwrap()
+    MotifId::from_str_radix(s, MOTIF_BASE as u32).unwrap()
 }
