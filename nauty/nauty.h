@@ -12,7 +12,7 @@ it is necessary to check they are correct.
 ====================================================================*/
 
 /* Check whether various headers or options are available */
-#define HAVE_UNISTD_H  1    /* <unistd.h> */
+#define HAVE_UNISTD_H  0    /* <unistd.h> */
 #define HAVE_SYSTYPES_H  1    /* <sys/types.h> */
 #define HAVE_STDDEF_H  1     /* <stddef.h> */
 #define HAVE_STDLIB_H  1    /* <stdlib.h> */
@@ -34,7 +34,7 @@ it is necessary to check they are correct.
 #define HAVE_TLS 0   /* have storage attribute for thread-local */
 #define TLS_ATTR   /* if so, what it is.  if not, empty */
 
-#define USE_ANSICONTROLS 0 
+#define USE_ANSICONTROLS 0
                           /* whether --enable-ansicontrols is used */
 
 #define _FILE_OFFSET_BITS no
@@ -86,7 +86,7 @@ it is necessary to check they are correct.
 *            email:  bdm@cs.anu.edu.au                                       *
 *                                                                            *
 *   Nauty is copyright (1984-2013) Brendan McKay.  All rights reserved.      *
-*   Permission 
+*   Permission
 *   is hereby given for use and/or distribution with the exception of        *
 *   sale for profit or application with nontrivial military significance.    *
 *   You must not remove this copyright notice, and you must document any     *
@@ -350,7 +350,7 @@ it is necessary to check they are correct.
 
    If WORDSIZE is not defined, but DEFAULT_WORDSIZE > 0, then set
       WORDSIZE to the same value as DEFAULT_WORDSIZE.
-   If WORDSIZE is so far undefined, use 32 unless longs have more 
+   If WORDSIZE is so far undefined, use 32 unless longs have more
       than 32 bits, in which case use 64.
    Define setword thus:
       WORDSIZE==16 : unsigned short
@@ -555,9 +555,9 @@ typedef unsigned long nauty_counter;
 #define MSK0856 0xFF00000000000000ULL
 #define MSK1632 0x0000FFFF00000000ULL
 #define MSK0840     0xFF0000000000ULL
-#define MSK1616         0xFFFF0000ULL 
-#define MSK0824         0xFF000000ULL 
-#define MSK0808             0xFF00ULL 
+#define MSK1616         0xFFFF0000ULL
+#define MSK0824         0xFF000000ULL
+#define MSK0808             0xFF00ULL
 #define MSK63C  0x7FFFFFFFFFFFFFFFULL
 #define MSK31C          0x7FFFFFFFULL
 #define MSK15C              0x7FFFULL
@@ -573,9 +573,9 @@ typedef unsigned long nauty_counter;
 #define MSK0856 0xFF00000000000000UL
 #define MSK1632 0x0000FFFF00000000UL
 #define MSK0840     0xFF0000000000UL
-#define MSK1616         0xFFFF0000UL 
-#define MSK0824         0xFF000000UL 
-#define MSK0808             0xFF00UL 
+#define MSK1616         0xFFFF0000UL
+#define MSK0824         0xFF000000UL
+#define MSK0808             0xFF00UL
 #define MSK63C  0x7FFFFFFFFFFFFFFFUL
 #define MSK31C          0x7FFFFFFFUL
 #define MSK15C              0x7FFFUL
@@ -591,9 +591,9 @@ typedef unsigned long nauty_counter;
 #define MSK0856 0xFF00000000000000U
 #define MSK1632 0x0000FFFF00000000U
 #define MSK0840     0xFF0000000000U
-#define MSK1616         0xFFFF0000U 
+#define MSK1616         0xFFFF0000U
 #define MSK0824         0xFF000000U
-#define MSK0808             0xFF00U 
+#define MSK0808             0xFF00U
 #define MSK63C  0x7FFFFFFFFFFFFFFFU
 #define MSK31C          0x7FFFFFFFU
 #define MSK15C              0x7FFFU
@@ -766,7 +766,7 @@ typedef unsigned long nauty_counter;
 /* The following four types are obsolete, use int in new code. */
 typedef int shortish;
 typedef shortish permutation;
-typedef int nvector,np2vector; 
+typedef int nvector,np2vector;
 
 /* For backward compatibility: */
 #if !HAS_MATH_INF && !defined(INFINITY)
@@ -928,10 +928,10 @@ extern void free(void*);
 
 /* ALLOCS(x,y) should return a pointer (any pointer type) to x*y units of new
    storage, not necessarily initialised.  A "unit" of storage is defined by
-   the sizeof operator.   x and y are integer values of type int or larger, 
+   the sizeof operator.   x and y are integer values of type int or larger,
    but x*y may well be too large for an int.  The macro should cast to the
-   correct type for the call.  On failure, ALLOCS(x,y) should return a NULL 
-   pointer.  FREES(p) should free storage previously allocated by ALLOCS, 
+   correct type for the call.  On failure, ALLOCS(x,y) should return a NULL
+   pointer.  FREES(p) should free storage previously allocated by ALLOCS,
    where p is the value that ALLOCS returned. */
 
 #ifdef NAUTY_IN_MAGMA
@@ -940,7 +940,7 @@ extern void free(void*);
 #define FREES(p) mem_free(p)
 #else
 #define ALLOCS(x,y) malloc((size_t)(x)*(size_t)(y))
-#define REALLOCS(p,x) realloc(p,(size_t)(x)) 
+#define REALLOCS(p,x) realloc(p,(size_t)(x))
 #define FREES(p) free(p)
 #endif
 
@@ -955,7 +955,7 @@ extern void free(void*);
    DYNALLOC2 test if there is enough space allocated, and if not free
    the existing space and allocate a bigger space.  The allocated space
    is not initialised.
-   
+
    In the case of DYNALLOC1, the space is allocated using
        ALLOCS(sz,sizeof(type)).
    In the case of DYNALLOC2, the space is allocated using
@@ -992,7 +992,7 @@ extern void free(void*);
 #define ERRFILE stderr
 
 /* Don't use OLDEXTDEFS, it is only still here for Magma. */
-#ifdef OLDEXTDEFS   
+#ifdef OLDEXTDEFS
 #define EXTDEF_CLASS
 #ifdef EXTDEFS
 #define EXTDEF_TYPE 1
