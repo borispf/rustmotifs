@@ -1,10 +1,10 @@
 #![feature(alloc_system)]
 
 extern crate alloc_system;
-extern crate bruteforce;
+extern crate rustmotifs;
 
-use bruteforce::network::*;
-use bruteforce::motifs::*;
+use rustmotifs::network::*;
+use rustmotifs::motifs::*;
 
 use std::io::prelude::*;
 use std::iter::FromIterator;
