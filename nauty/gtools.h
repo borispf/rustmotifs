@@ -14,22 +14,20 @@ used, it is necessary to check they are correct.
 
 #define HAVE_ERRNO_H  1      /* <errno.h> exists */
 #define HAVE_PERROR  1          /* perror() exists */
-#define HAVE_PIPE  1          /* pipe() exists */
-#define HAVE_WAIT  1          /* wait() exists */
-#define HAVE_WAIT_H  1     /* <sys/wait.h> exists */
+#define HAVE_PIPE  0          /* pipe() exists */
+#define HAVE_WAIT  0          /* wait() exists */
+#define HAVE_WAIT_H  0     /* <sys/wait.h> exists */
 #define HAVE_POPEN  1          /* popen() and pclose() exist */
 #define POPEN_DEC  1         /* popen() is declared in stdio.h */
 #define FTELL_DEC  1         /* ftell() is declared in stdio.h */
 #define FDOPEN_DEC  1        /* fdopen() is declared in stdio.h */
-#define SORTPROG  "sort"         /* name of sort program */
-#define SORT_NEWKEY 1  /* if -k is supported */
-#define HAVE_PID_T 1    /* pid_t is defined */
+#define HAVE_PID_T 0    /* pid_t is defined */
 #define PUTENV_DEC 1   /* putenv() is declared in stdlib.h */
 #define SETENV_DEC 1   /* setenv() is declared in stdlib.h */
 #define HAVE_PUTENV 1   /* putenv() exists */
 #define HAVE_SETENV 1   /* setenv() exists */
-#define HAVE_PTHREADS 1   /* Posix threads exist */
-#define HAVE_PTHREAD_H  1      /* <pthread.h> exists */
+#define HAVE_PTHREADS 0   /* Posix threads exist */
+#define HAVE_PTHREAD_H  0      /* <pthread.h> exists */
 #define HAVE_FSEEKO 1  /* fseeko() and ftello() exist */
 #define HAVE_SIGACTION 1  /* sigaction() exists */
 #define HAVE_SIGPROCMASK 1  /* sigprocmask() exists */
@@ -38,7 +36,7 @@ used, it is necessary to check they are correct.
 
 /*==================================================================*/
 
-#ifndef MAXN 
+#ifndef MAXN
 #define MAXN  0
 #endif
 
@@ -46,7 +44,7 @@ used, it is necessary to check they are correct.
 	/* length of size code in bytes */
 #define G6LEN(n) (SIZELEN(n) \
  + ((size_t)(n)/12)*((size_t)(n)-1) + (((size_t)(n)%12)*((size_t)(n)-1)+11)/12)
-  /* exactly graph6 string length excluding \n\0 
+  /* exactly graph6 string length excluding \n\0
      This twisted expression works up to n=227023 in 32-bit arithmetic
      and for larger n if size_t has 64 bits.  */
 
@@ -141,7 +139,7 @@ int setenv(const char*,const char*,int);
 #define SWRANGE(c,sep,bool,val1,val2,id) if (sw==c) \
 	{bool=TRUE;arg_range(&arg,sep,&val1,&val2,id);}
 
-#ifdef HELPTEXT2 
+#ifdef HELPTEXT2
 #define PUTHELPTEXT printf("\nUsage: %s\n\n%s",USAGE,HELPTEXT1);\
 		    printf("%s",HELPTEXT2);
 #else
@@ -173,7 +171,7 @@ fprintf(stderr,"   Use %s -help to see more detailed instructions.\n",argv[0])
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
+
 extern void gtools_check(int,int,int,int);
 extern FILE *opengraphfile(char*,int*,boolean,long);
 extern void writeline(FILE*,char*);
