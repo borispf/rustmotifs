@@ -16,7 +16,7 @@ fn main() {
         .file("nauty/gutil2.c")
         .file("nauty/gtnauty.c")
         .file("nauty/naugroup.c")
-        .define("WORDSIZE", Some("32"))
+        .define("WORDSIZE", Some("64"))
         .define("MAXN", Some("WORDSIZE"))
         .compile("libnautyL1.a");
 }

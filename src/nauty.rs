@@ -6,7 +6,7 @@ use std::iter::FromIterator;
 use std::sync::{StaticMutex, MUTEX_INIT};
 
 pub const MAXN: usize = WORDSIZE;
-pub const WORDSIZE: usize = 32;
+pub const WORDSIZE: usize = 64;
 
 static NAUTY_LOCK: StaticMutex = MUTEX_INIT;
 
@@ -39,7 +39,7 @@ fn add_one_arc(g: &mut [graph], v: usize, w: usize) {
 // }
 
 fn bit(n: usize) -> nauty_bindings::setword {
-    debug_assert!(n < WORDSIZE)
+    debug_assert!(n <= WORDSIZE, "n > WORDSIZE: {}", n);
     1 << (WORDSIZE - 1 - n)
 }
 
